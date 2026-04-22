@@ -37,6 +37,10 @@ const create = async (req, res) => {
 const deleteOne = async (req, res) => {
   const id = +req.params.id;
 
+  if (!Number.isInteger(id)) {
+    return res.sendStatus(400);
+  }
+
   const user = await usersService.deleteById(id);
 
   if (!user) {
@@ -49,6 +53,11 @@ const deleteOne = async (req, res) => {
 const update = async (req, res) => {
   const id = +req.params.id;
   const { name } = req.body;
+
+  if (!name || typeof name !== 'string') {
+    return res.sendStatus(400);
+  }
+
   const user = await usersService.getById(id);
 
   if (!user) {

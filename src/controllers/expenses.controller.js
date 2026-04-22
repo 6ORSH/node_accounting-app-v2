@@ -78,6 +78,10 @@ const create = async (req, res) => {
 const deleteOne = async (req, res) => {
   const id = +req.params.id;
 
+  if (!Number.isInteger(id)) {
+    return res.sendStatus(400);
+  }
+
   const expense = await expensesService.deleteById(id);
 
   if (!expense) {

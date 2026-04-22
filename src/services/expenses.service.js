@@ -65,8 +65,6 @@ const deleteById = (id) => {
 
   const [expense] = expenses.splice(index, 1);
 
-  currentExpenseId--;
-
   return expense;
 };
 

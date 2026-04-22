@@ -28,8 +28,6 @@ const deleteById = (id) => {
 
   const [user] = users.splice(index, 1);
 
-  currentUserId--;
-
   return user;
 };
 
