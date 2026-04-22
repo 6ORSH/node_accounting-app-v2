@@ -93,6 +93,11 @@ const deleteOne = async (req, res) => {
 
 const update = async (req, res) => {
   const id = +req.params.id;
+
+  if (!Number.isInteger(id)) {
+    return res.sendStatus(400);
+  }
+
   const expense = await expensesService.getById(id);
 
   if (!expense) {

@@ -25,7 +25,7 @@ const getOne = async (req, res) => {
 const create = async (req, res) => {
   const name = req.body.name;
 
-  if (!name) {
+  if (!name || typeof name !== 'string') {
     return res.sendStatus(400);
   }
 

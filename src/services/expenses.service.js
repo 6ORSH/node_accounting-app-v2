@@ -3,7 +3,7 @@ let currentExpenseId = 1;
 
 const getAll = (query = {}) => {
   const { userId, from, to, categories } = query;
-  const parsedUserId = userId ? +userId : undefined;
+  const parsedUserId = userId == null ? undefined : Number(userId);
 
   return expenses.filter((expense) => {
     if (parsedUserId && expense.userId !== parsedUserId) {
