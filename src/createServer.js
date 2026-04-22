@@ -1,10 +1,15 @@
 'use strict';
 
-import express from 'express';
-import { expensesRouter } from './routes/expenses.route.js';
-import { usersRouter } from './routes/users.route.js';
+const express = require('express');
+const { usersRouter } = require('./routes/users.route');
+const { expensesRouter } = require('./routes/expenses.route');
+const usersService = require('./services/users.service');
+const expensesService = require('./services/expenses.service');
 
-export const createServer = () => {
+function createServer() {
+  usersService.resetInitialValues();
+  expensesService.resetInitialValues();
+
   const app = express();
 
   app.use(express.json());
@@ -13,4 +18,8 @@ export const createServer = () => {
   app.use('/expenses', expensesRouter);
 
   return app;
+}
+
+module.exports = {
+  createServer,
 };

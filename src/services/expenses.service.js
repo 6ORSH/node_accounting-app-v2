@@ -1,16 +1,12 @@
-const expenses = [];
-let lastExpenseId = 0;
+let expenses = [];
+let currentExpenseId = 1;
 
-export function reset() {
-  expenses.length = 0;
-  lastExpenseId = 0;
-}
-
-export function getAll(query) {
+const getAll = (query = {}) => {
   const { userId, from, to, categories } = query;
+  const parsedUserId = userId ? +userId : undefined;
 
   return expenses.filter((expense) => {
-    if (userId && expense.userId !== userId) {
+    if (parsedUserId && expense.userId !== parsedUserId) {
       return false;
     }
 
@@ -36,15 +32,15 @@ export function getAll(query) {
 
     return true;
   });
-}
+};
 
-export function getById(id) {
+const getById = (id) => {
   return expenses.find((expense) => expense.id === id);
-}
+};
 
-export function create({ userId, spentAt, title, amount, category, note }) {
+const create = ({ userId, spentAt, title, amount, category, note }) => {
   const newExpense = {
-    id: lastExpenseId,
+    id: currentExpenseId,
     userId,
     spentAt,
     title,
@@ -53,14 +49,14 @@ export function create({ userId, spentAt, title, amount, category, note }) {
     note,
   };
 
-  lastExpenseId++;
+  currentExpenseId++;
 
   expenses.push(newExpense);
 
   return newExpense;
-}
+};
 
-export function deleteById(id) {
+const deleteById = (id) => {
   const index = expenses.findIndex((e) => e.id === id);
 
   if (index === -1) {
@@ -69,12 +65,12 @@ export function deleteById(id) {
 
   const [expense] = expenses.splice(index, 1);
 
-  lastExpenseId--;
+  currentExpenseId--;
 
   return expense;
-}
+};
 
-export function update({ id, spentAt, title, amount, category, note }) {
+const update = ({ id, spentAt, title, amount, category, note }) => {
   const expense = expenses.find((e) => e.id === id);
 
   if (!expense) {
@@ -104,22 +100,18 @@ export function update({ id, spentAt, title, amount, category, note }) {
   }
 
   return Object.assign(expense, updates);
-}
+};
 
-export function deleteMany(ids) {
-  return ids.map(deleteById);
-}
+const resetInitialValues = () => {
+  expenses = [];
+  currentExpenseId = 1;
+};
 
-export function updateMany(expensesToUpdate) {
-  return expenses.map(update);
-}
-
-export const expensesService = {
+module.exports = {
   getAll,
   getById,
   create,
   deleteById,
   update,
-  deleteMany,
-  updateMany,
+  resetInitialValues,
 };

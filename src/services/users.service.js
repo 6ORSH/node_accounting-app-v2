@@ -1,28 +1,25 @@
-import { v4 as uuidv4 } from 'uuid';
+let users = [];
+let currentUserId = 1;
 
-const users = [];
-
-export function reset() {
-  users.length = 0;
-}
-
-export function getAll() {
+const getAll = () => {
   return users;
-}
+};
 
-export function getById(id) {
+const getById = (id) => {
   return users.find((user) => user.id === id);
-}
+};
 
-export function create(name) {
-  const user = { id: uuidv4(), name };
+const create = (name) => {
+  const user = { id: currentUserId, name };
 
   users.push(user);
 
-  return user;
-}
+  currentUserId++;
 
-export function deleteById(id) {
+  return user;
+};
+
+const deleteById = (id) => {
   const index = users.findIndex((u) => u.id === id);
 
   if (index === -1) {
@@ -31,10 +28,12 @@ export function deleteById(id) {
 
   const [user] = users.splice(index, 1);
 
-  return user;
-}
+  currentUserId--;
 
-export function update({ id, name }) {
+  return user;
+};
+
+const update = ({ id, name }) => {
   const user = users.find((u) => u.id === id);
 
   if (!user) {
@@ -42,22 +41,18 @@ export function update({ id, name }) {
   }
 
   return Object.assign(user, { name });
-}
+};
 
-export function deleteMany(ids) {
-  return ids.map(deleteById);
-}
+const resetInitialValues = () => {
+  users = [];
+  currentUserId = 1;
+};
 
-export function updateMany(usersToUpdate) {
-  return usersToUpdate.map(update);
-}
-
-export const usersService = {
+module.exports = {
   getAll,
   getById,
   create,
   deleteById,
   update,
-  deleteMany,
-  updateMany,
+  resetInitialValues,
 };

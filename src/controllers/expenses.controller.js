@@ -1,13 +1,13 @@
-import { expensesService } from '../services/expenses.service.js';
-import { usersService } from '../services/users.service.js';
+const expensesService = require('../services/expenses.service');
+const usersService = require('../services/users.service');
 
-export const getAll = async (req, res) => {
+const getAll = async (req, res) => {
   const expenses = await expensesService.getAll(req.query);
 
   res.json(expenses);
 };
 
-export const getOne = async (req, res) => {
+const getOne = async (req, res) => {
   const id = +req.params.id;
 
   if (!Number.isInteger(id)) {
@@ -23,10 +23,46 @@ export const getOne = async (req, res) => {
   res.json(expense);
 };
 
-export const create = async (req, res) => {
-  const userId = req.body.userId;
+const create = async (req, res) => {
+  const { userId, spentAt, title, amount, category, note } = req.body;
 
-  const user = await usersService.getAll().find((u) => u.id === userId);
+  if (userId === undefined || userId === null || userId === '') {
+    return res.sendStatus(400);
+  }
+
+  if (!Number.isInteger(userId) || userId < 1) {
+    return res.sendStatus(400);
+  }
+
+  if (!spentAt) {
+    return res.sendStatus(400);
+  }
+
+  if (typeof spentAt !== 'string' || !new Date(spentAt).getTime()) {
+    return res.sendStatus(400);
+  }
+
+  if (!title || typeof title !== 'string') {
+    return res.sendStatus(400);
+  }
+
+  if (amount === undefined || amount === null || amount === '') {
+    return res.sendStatus(400);
+  }
+
+  if (!Number.isInteger(amount) || amount < 1) {
+    return res.sendStatus(400);
+  }
+
+  if (!category || typeof category !== 'string') {
+    return res.sendStatus(400);
+  }
+
+  if (note !== undefined && typeof note !== 'string') {
+    return res.sendStatus(400);
+  }
+
+  const user = await usersService.getById(userId);
 
   if (!user) {
     return res.sendStatus(400);
@@ -39,7 +75,7 @@ export const create = async (req, res) => {
   res.status(201).json(expense);
 };
 
-export const deleteOne = async (req, res) => {
+const deleteOne = async (req, res) => {
   const id = +req.params.id;
 
   const expense = await expensesService.deleteById(id);
@@ -51,7 +87,7 @@ export const deleteOne = async (req, res) => {
   res.sendStatus(204);
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
   const id = +req.params.id;
   const expense = await expensesService.getById(id);
 
@@ -67,7 +103,7 @@ export const update = async (req, res) => {
   res.json(updatedExpense);
 };
 
-export const expensesController = {
+module.exports = {
   getAll,
   getOne,
   create,

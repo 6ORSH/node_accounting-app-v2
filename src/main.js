@@ -1,6 +1,6 @@
 'use strict';
 
-import { createServer } from './createServer.js';
+const createServer = require('./createServer.js');
 
 createServer().listen(3000, () => {
   // eslint-disable-next-line no-console

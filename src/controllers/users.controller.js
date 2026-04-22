@@ -1,13 +1,19 @@
-import { usersService } from '../services/users.service.js';
+const usersService = require('../services/users.service');
 
-export const getAll = async (req, res) => {
+const getAll = async (req, res) => {
   const users = await usersService.getAll();
 
   res.json(users);
 };
 
-export const getOne = async (req, res) => {
-  const user = await usersService.getById(req.params.id);
+const getOne = async (req, res) => {
+  const id = +req.params.id;
+
+  if (!Number.isInteger(id)) {
+    return res.sendStatus(400);
+  }
+
+  const user = await usersService.getById(id);
 
   if (!user) {
     return res.sendStatus(404);
@@ -16,7 +22,7 @@ export const getOne = async (req, res) => {
   res.json(user);
 };
 
-export const create = async (req, res) => {
+const create = async (req, res) => {
   const name = req.body.name;
 
   if (!name) {
@@ -28,8 +34,10 @@ export const create = async (req, res) => {
   res.status(201).json(user);
 };
 
-export const deleteOne = async (req, res) => {
-  const user = await usersService.deleteById(req.params.id);
+const deleteOne = async (req, res) => {
+  const id = +req.params.id;
+
+  const user = await usersService.deleteById(id);
 
   if (!user) {
     return res.sendStatus(404);
@@ -38,23 +46,24 @@ export const deleteOne = async (req, res) => {
   res.sendStatus(204);
 };
 
-export const update = async (req, res) => {
+const update = async (req, res) => {
+  const id = +req.params.id;
   const { name } = req.body;
-  const user = await usersService.getById(req.params.id);
+  const user = await usersService.getById(id);
 
   if (!user) {
     return res.sendStatus(404);
   }
 
   const updatedUser = await usersService.update({
-    id: req.params.id,
+    id,
     name,
   });
 
   res.json(updatedUser);
 };
 
-export const usersController = {
+module.exports = {
   getAll,
   getOne,
   create,
